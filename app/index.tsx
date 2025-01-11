@@ -8,8 +8,8 @@ export default function Index() {
     // First transition after 2 seconds
     const timer1 = setTimeout(() => {
   
-      router.replace("./home/welcome");
-    }, 2000);
+      router.replace("./home/splash");
+    }, 1000);
         
     return () => clearTimeout(timer1);
   }, []);

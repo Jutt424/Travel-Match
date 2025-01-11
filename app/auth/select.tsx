@@ -1,293 +1,304 @@
-import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
-import { useState } from "react";
+import React, { useState } from "react";
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    SafeAreaView,
+    ImageBackground,
+    Pressable,
+    Image,
+} from "react-native";
+import background_image from "../../assets/images/bg.png"; // Add your background image path here
+import { Ionicons } from "@expo/vector-icons";
+import group from "../../assets/images/group.png";
+import polygon from "../../assets/images/polygon.png";
+import language from "../../assets/images/language.png"
+import old_man from "../../assets/images/oldMan.png"
+import travel from "../../assets/images/travel.png"
 
-interface PreferenceOption {
-    id: string;
-    label: string;
+
+// Define types for selected options
+interface SelectedOptions {
+    age: string | null;
+    languages: string[];
+    group: string | null;
+    travelType: string[];
 }
 
-export default function PreferencesForm() {
-    const [selectedAge, setSelectedAge] = useState<string>('');
-    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
-    const [selectedGroupType, setSelectedGroupType] = useState<string>('');
-    const [selectedTravelTypes, setSelectedTravelTypes] = useState<string[]>([]);
+const Select: React.FC = () => {
+    const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>({
+        age: null,
+        languages: [],
+        group: null,
+        travelType: [],
+    });
 
-    const ageRanges: PreferenceOption[] = [
-        { id: '<18', label: '< 18' },
-        { id: '18-25', label: '18 - 25' },
-        { id: '26-30', label: '26 - 30' },
-        { id: '30+', label: '30+' },
-    ];
-
-    const languages: PreferenceOption[] = [
-        { id: 'english', label: 'english' },
-        { id: 'italian', label: 'italian' },
-        { id: 'spanish', label: 'spanish' },
-        { id: 'french', label: 'french' },
-        { id: 'deutsch', label: 'deutsch' },
-    ];
-
-    const groupPreferences: PreferenceOption[] = [
-        { id: 'only_girls', label: 'only girls' },
-        { id: 'only_boys', label: 'only boys' },
-        { id: 'couples', label: 'couples' },
-        { id: 'families', label: 'families' },
-        { id: 'boys_girls', label: 'boys & girls' },
-    ];
-
-    const travelTypes: PreferenceOption[] = [
-        { id: 'nightlife', label: 'nightlife/club' },
-        { id: 'relax', label: 'relax' },
-        { id: 'adventure', label: 'adventure' },
-        { id: 'cultural', label: 'cultural' },
-        { id: 'nature', label: 'nature' },
-    ];
-
-    const toggleSelection = (id: string, type: 'age' | 'language' | 'group' | 'travel') => {
-        switch (type) {
-            case 'age':
-                setSelectedAge(selectedAge === id ? '' : id);
-                break;
-            case 'language':
-                setSelectedLanguages(prev => 
-                    prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
-                );
-                break;
-            case 'group':
-                setSelectedGroupType(selectedGroupType === id ? '' : id);
-                break;
-            case 'travel':
-                setSelectedTravelTypes(prev => 
-                    prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
-                );
-                break;
+    const toggleSelection = (category: keyof SelectedOptions, value: string) => {
+        if (category === "age" || category === "group") {
+            setSelectedOptions((prev) => ({ ...prev, [category]: value }));
+        } else if (["languages", "travelType"].includes(category)) {
+            setSelectedOptions((prev) => {
+                const current = prev[category] as string[];
+                return current.includes(value)
+                    ? {
+                        ...prev,
+                        [category]: current.filter((item) => item !== value),
+                    }
+                    : { ...prev, [category]: [...current, value] };
+            });
         }
     };
 
-    const clearAll = () => {
-        setSelectedAge('');
-        setSelectedLanguages([]);
-        setSelectedGroupType('');
-        setSelectedTravelTypes([]);
+    const clearSelection = () => {
+        setSelectedOptions({
+            age: null,
+            languages: [],
+            group: null,
+            travelType: [],
+        });
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.title}>Find your</Text>
-                <Text style={styles.highlight}>perfect match</Text>
-                <Text style={styles.subtitle}>Tell us what you love, so we can show you trips and events that excite you!</Text>
-            </View>
+        <SafeAreaView style={{ flex: 1, paddingRight: 10 }}>
+            <ImageBackground source={background_image} style={styles.bgcontainer}>
+                <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+                    <View style={styles.header}>
 
-            <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                    <Ionicons name="person-outline" size={20} color="#0037FF" />
-                    <Text style={styles.sectionTitle}>Age</Text>
-                </View>
-                <View style={styles.optionsContainer}>
-                    {ageRanges.map(range => (
-                        <Pressable
-                            key={range.id}
-                            style={[
-                                styles.option,
-                                selectedAge === range.id && styles.selectedOption
-                            ]}
-                            onPress={() => toggleSelection(range.id, 'age')}
+                        <View style={{ display: 'flex', justifyContent: "space-between", flexDirection: "row", alignItems: 'center' }}>
+                            <View>
+                                <Text style={{ fontSize: 20, fontWeight: 700, color: "#000000" }}>
+                                    travel
+                                    <Text style={{ color: "#233DFF" }}>match</Text>
+                                </Text>
+                            </View>
+                            <View>
+                                <View style={{ display: "flex", justifyContent: 'center', gap: 1, flexDirection: 'row', alignItems: "center" }}>
+                                    <Text>SKIP</Text>
+                                    <Image source={polygon} />
+                                </View>
+                            </View>
+                        </View>
+                        <View style={{ display: 'flex', gap: 0 }}>
+                            <Text style={styles.title}>Find your</Text>
+                            <Text style={styles.highlight}>perfect match</Text>
+                        </View>
+
+
+                    </View>
+
+
+                    <Text style={styles.subHeader}>
+                        Tell us what you love, so we can show you trips and events that excite you!
+                    </Text>
+
+                    {/* Age Section */}
+                    <View style={styles.section}>
+                        <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center", marginBottom: 23 }}>
+                            <Image source={old_man} />
+                            <Text style={styles.sectionTitle}>Age</Text>
+                        </View>
+                        <View style={styles.optionsRow}>
+                            {["< 18", "18 - 25", "25 - 30", "30+"].map((age) => (
+                                <TouchableOpacity
+                                    key={age}
+                                    style={[styles.option, selectedOptions.age === age && styles.selectedOption]}
+                                    onPress={() => toggleSelection("age", age)}
+                                >
+                                    <Text style={[styles.optionText, selectedOptions.age === age && styles.selectedOptionText]}>
+                                        {age}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+
+                    {/* Languages Section */}
+                    <View style={styles.section}>
+                        <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center", marginBottom: 23 }}>
+                            <Image source={language} />
+                            <Text style={styles.sectionTitle}>Spoken languages</Text>
+                        </View>
+                        <View style={styles.optionsRow}>
+                            {["english", "italian", "spanish", "french", "deutsch"].map((language) => (
+                                <TouchableOpacity
+                                    key={language}
+                                    style={[styles.option, selectedOptions.languages.includes(language) && styles.selectedOption]}
+                                    onPress={() => toggleSelection("languages", language)}
+                                >
+                                    <Text style={[styles.optionText, selectedOptions.languages.includes(language) && styles.selectedOptionText]}>
+                                        {language}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+
+                    {/* Group Preferences Section */}
+                    <View style={styles.section}>
+                        <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center", marginBottom: 23 }}>
+                            <Image source={group} />
+                            <Text style={styles.sectionTitle}>Group preferences</Text>
+                        </View>
+                        <View style={styles.optionsRow}>
+                            {["only girls", "only boys", "couples", "families", "boys & girls"].map((group) => (
+                                <TouchableOpacity
+                                    key={group}
+                                    style={[styles.option, selectedOptions.group === group && styles.selectedOption]}
+                                    onPress={() => toggleSelection("group", group)}
+                                >
+                                    <Text style={[styles.optionText, selectedOptions.group === group && styles.selectedOptionText]}>
+                                        {group}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+
+                    {/* Travel Type Section */}
+                    <View style={styles.section}>
+                        <View style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "center", marginBottom: 23 }}>
+                            <Image source={travel} />
+                            <Text style={styles.sectionTitle}>Travel type</Text>
+                        </View>
+                        <View style={styles.optionsRow}>
+                            {["nightlife/club", "relax", "adventure", "cultural", "nature"].map((type) => (
+                                <TouchableOpacity
+                                    key={type}
+                                    style={[styles.option, selectedOptions.travelType.includes(type) && styles.selectedOption]}
+                                    onPress={() => toggleSelection("travelType", type)}
+                                >
+                                    <Text style={[styles.optionText, selectedOptions.travelType.includes(type) && styles.selectedOptionText]}>
+                                        {type}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+
+                    {/* Footer with Save and Clear buttons */}
+                    <View style={styles.footer}>
+                        <TouchableOpacity
+                            style={styles.saveButton}
+                            onPress={() => { /* */ }}
                         >
-                            <Text style={[
-                                styles.optionText,
-                                selectedAge === range.id && styles.selectedOptionText
-                            ]}>{range.label}</Text>
+                            <Text style={styles.saveButtonText}>SAVE</Text>
+                            <Ionicons name="save-outline" size={24} color="#fff" />
+                        </TouchableOpacity>
+                        <Pressable style={styles.clearButton} onPress={clearSelection}>
+                            <Text style={styles.clearButtonText}>CLEAR SELECTION</Text>
+                            <Ionicons name="close-outline" size={20} color="#0037FF" />
                         </Pressable>
-                    ))}
-                </View>
-            </View>
-
-            <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                    <Ionicons name="language-outline" size={20} color="#0037FF" />
-                    <Text style={styles.sectionTitle}>Spoken languages</Text>
-                </View>
-                <View style={styles.optionsContainer}>
-                    {languages.map(lang => (
-                        <Pressable
-                            key={lang.id}
-                            style={[
-                                styles.option,
-                                selectedLanguages.includes(lang.id) && styles.selectedOption
-                            ]}
-                            onPress={() => toggleSelection(lang.id, 'language')}
-                        >
-                            <Text style={[
-                                styles.optionText,
-                                selectedLanguages.includes(lang.id) && styles.selectedOptionText
-                            ]}>{lang.label}</Text>
-                        </Pressable>
-                    ))}
-                </View>
-            </View>
-
-            <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                    <Ionicons name="people-outline" size={20} color="#0037FF" />
-                    <Text style={styles.sectionTitle}>Group preferences</Text>
-                </View>
-                <View style={styles.optionsContainer}>
-                    {groupPreferences.map(pref => (
-                        <Pressable
-                            key={pref.id}
-                            style={[
-                                styles.option,
-                                selectedGroupType === pref.id && styles.selectedOption
-                            ]}
-                            onPress={() => toggleSelection(pref.id, 'group')}
-                        >
-                            <Text style={[
-                                styles.optionText,
-                                selectedGroupType === pref.id && styles.selectedOptionText
-                            ]}>{pref.label}</Text>
-                        </Pressable>
-                    ))}
-                </View>
-            </View>
-
-            <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                    <Ionicons name="airplane-outline" size={20} color="#0037FF" />
-                    <Text style={styles.sectionTitle}>Travel type</Text>
-                </View>
-                <View style={styles.optionsContainer}>
-                    {travelTypes.map(type => (
-                        <Pressable
-                            key={type.id}
-                            style={[
-                                styles.option,
-                                selectedTravelTypes.includes(type.id) && styles.selectedOption
-                            ]}
-                            onPress={() => toggleSelection(type.id, 'travel')}
-                        >
-                            <Text style={[
-                                styles.optionText,
-                                selectedTravelTypes.includes(type.id) && styles.selectedOptionText
-                            ]}>{type.label}</Text>
-                        </Pressable>
-                    ))}
-                </View>
-            </View>
-
-            <View style={styles.footer}>
-                <Pressable style={styles.saveButton}>
-                    <Text style={styles.saveButtonText}>SAVE</Text>
-                    <Ionicons name="save-outline" size={20} color="white" />
-                </Pressable>
-                <Pressable style={styles.clearButton} onPress={clearAll}>
-                    <Text style={styles.clearButtonText}>CLEAR SELECTION</Text>
-                    <Ionicons name="close-outline" size={20} color="#0037FF" />
-                </Pressable>
-            </View>
-        </ScrollView>
+                    </View>
+                </ScrollView>
+            </ImageBackground>
+        </SafeAreaView>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
+        marginTop: 63,
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    bgcontainer: {
         flex: 1,
-        backgroundColor: '#F5F7FF',
-        padding: 20,
     },
     header: {
-        marginBottom: 30,
+        marginBottom: 39,
     },
     title: {
-        fontSize: 32,
-        fontWeight: '700',
-        color: '#000',
+        fontSize: 48,
+        fontWeight: "bold",
     },
     highlight: {
-        fontSize: 32,
-        fontWeight: '700',
-        color: '#0037FF',
-        marginBottom: 8,
+        fontSize: 48,
+        fontWeight: "bold",
+        color: "#233dff",
+        lineHeight: 48,
     },
-    subtitle: {
+    subHeader: {
         fontSize: 14,
-        color: '#666',
-        lineHeight: 20,
+        color: "#000000b0",
+        marginBottom: 23,
     },
     section: {
-        marginBottom: 24,
-    },
-    sectionHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-        marginBottom: 12,
+        marginBottom: 32,
     },
     sectionTitle: {
         fontSize: 16,
-        fontWeight: '600',
-        color: '#000',
+        fontWeight: 700,
+        color: "#000",
     },
-    optionsContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: 8,
+    optionsRow: {
+        flexDirection: "row",
+        flexWrap: "wrap",
     },
     option: {
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: 20,
-        backgroundColor: 'white',
         borderWidth: 1,
-        borderColor: '#E5E5E5',
+        borderColor: "#ddd",
+        borderRadius: 20,
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        marginRight: 10,
+        marginBottom: 10,
     },
     selectedOption: {
-        backgroundColor: '#0037FF',
-        borderColor: '#0037FF',
+        backgroundColor: "rgba(35, 61, 255, 1)",
+        borderColor: "#0000005e",
     },
     optionText: {
-        fontSize: 14,
-        color: '#666',
+        color: "#333",
+        fontWeight: 'bold',
     },
     selectedOptionText: {
-        color: 'white',
+        color: "#fff",
+        fontWeight: 'bold',
     },
     footer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 16,
-        gap: 12,
+        gap: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 80,
     },
     saveButton: {
         flex: 1,
-        backgroundColor: '#0037FF',
+        backgroundColor: '#0000FF',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 16,
-        borderRadius: 12,
+        borderRadius: 62,
+        paddingLeft: 16,
+        paddingRight: 16,
         gap: 8,
+        height: 52
     },
     saveButtonText: {
-        color: 'white',
+        color: '#fff',
+        fontSize: 16,
         fontWeight: '600',
-        fontSize: 14,
     },
     clearButton: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 16,
-        borderRadius: 12,
+        paddingLeft: 16,
+        paddingRight: 16,
+        borderRadius: 62,
         borderWidth: 1,
         borderColor: '#0037FF',
         gap: 8,
+        height: 52,
+
     },
     clearButtonText: {
         color: '#0037FF',
-        fontWeight: '600',
+        fontWeight: 700,
         fontSize: 14,
     },
 });
+
+export default Select;

@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: "auto",
-    marginBottom: 52,
+
     alignItems: "center",
     gap: 9,
   },

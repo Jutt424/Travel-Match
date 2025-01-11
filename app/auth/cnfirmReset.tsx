@@ -5,8 +5,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   GestureResponderEvent,
+  Image,
 } from "react-native";
-
+import right from "../../assets/images/right.png";
+import cross from "../../assets/images/cross.png"
 type ConfirmResetPasswordProps = {
   onConfirm: (event: GestureResponderEvent) => void;
   onCancel: (event: GestureResponderEvent) => void;
@@ -23,10 +25,10 @@ const ConfirmResetPassword: React.FC<ConfirmResetPasswordProps> = ({
       </Text>
       <View style={styles.buttonsContainer}>
         <TouchableOpacity style={styles.confirmButton} onPress={onConfirm}>
-          <Text style={styles.confirmText}>✔</Text>
+          <Text style={styles.confirmText}>  <Image source={right} /></Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
-          <Text style={styles.cancelText}>✖</Text>
+          <Text style={styles.cancelText}>  <Image source={cross} /></Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -85,11 +87,11 @@ const styles = StyleSheet.create({
   },
   confirmText: {
     fontSize: 18,
-    color: "#00C853",
+    color: " rgba(76, 175, 80, 1)",
   },
   cancelText: {
     fontSize: 18,
-    color: "#D32F2F",
+    color: "rgba(255, 61, 0, 1)",
   },
 });
 

@@ -1,112 +1,100 @@
+import { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
+import { router } from "expo-router";
 
-interface ConfirmResetProps {
-    onConfirm: () => void;
-    onCancel: () => void;
+interface ChangePasswordProps {
+    onSubmit: (newPassword: string) => void;
 }
 
-export default function ConfirmReset({ onConfirm, onCancel }: ConfirmResetProps) {
+export default function ChangePassword({ onSubmit }: ChangePasswordProps) {
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const handleSubmit = () => {
+        if (newPassword === confirmPassword) {
+          router.push('/auth/signin')
+        }
+    };
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Are you sure you want{'\n'}to reset password?</Text>
-            
-            <View style={styles.inputContainer}>
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>New password</Text>
                 <TextInput
                     style={styles.input}
-                    placeholder="Email"
-                    placeholderTextColor="#666"
-                    keyboardType="email-address"
-                />
-            </View>
-
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Current password"
-                    placeholderTextColor="#666"
                     secureTextEntry
+                    value={newPassword}
+                    onChangeText={setNewPassword}
+                    placeholder="********"
+                    placeholderTextColor="#000"
                 />
             </View>
 
-            <View style={styles.buttonContainer}>
-                <Pressable style={[styles.button, styles.confirmButton]} onPress={onConfirm}>
-                    <Ionicons name="checkmark-outline" size={24} color="white" />
-                </Pressable>
-                <Pressable style={[styles.button, styles.cancelButton]} onPress={onCancel}>
-                    <Ionicons name="close-outline" size={24} color="#FF3B30" />
-                </Pressable>
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Confirm new password</Text>
+                <TextInput
+                    style={styles.input}
+                    secureTextEntry
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    placeholder="********"
+                    placeholderTextColor="#000"
+                />
             </View>
+
+            <Pressable 
+                style={styles.button}
+                onPress={handleSubmit}
+            >
+                <Text style={styles.buttonText}>Change password</Text>
+            </Pressable>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 24,
-        backgroundColor: '#F5F7FF',
-        borderRadius: 20,
-        alignItems: 'center',
-        width: '100%',
-    },
-    title: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#000',
-        textAlign: 'center',
-        marginBottom: 20,
-        lineHeight: 24,
-    },
-    inputContainer: {
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
         backgroundColor: 'white',
-        borderRadius: 16,
-        paddingVertical: 14,
-        paddingHorizontal: 16,
-        marginBottom: 12,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-        elevation: 2,
+        borderRadius: 24,
+        padding: 24,
+        width: '100%',
+        flex:1,
+        justifyContent:'center',
+        alignItems:"center"
+    },
+    inputGroup: {
+        marginBottom: 24,
+        width:"100%"
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: 700,
+        color: '#000',
+        marginBottom: 8,
     },
     input: {
-        flex: 1,
-        padding: 8,
-        fontSize: 15,
-        color: '#333',
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        gap: 16,
-        marginTop: 8,
+        height: 56,
+        borderWidth: 1,
+        borderColor: '#E5E5E5',
+        borderRadius: 16,
+        paddingHorizontal: 16,
+        fontSize: 16,
+        backgroundColor: 'white',
     },
     button: {
-        width: 44,
-        height: 44,
-        borderRadius: 22,
+        backgroundColor: '#233dff',
+        height: 56,
+        borderRadius: 44,
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        marginTop: 8,
+        paddingLeft:12,
+        width:'100%',
+        paddingRight:12
     },
-    confirmButton: {
-        backgroundColor: '#34C759',
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 700,
     },
-    cancelButton: {
-        backgroundColor: 'white',
-        borderWidth: 1,
-        borderColor: '#FF3B30',
-    }
 });
